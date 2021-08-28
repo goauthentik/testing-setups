@@ -14,6 +14,8 @@ define remove_folder
 endef
 
 all:
+	$(call apply_folder,base/01_flux)
+	sleep 10
 	$(call apply_folder,base)
 
 nginx: all
