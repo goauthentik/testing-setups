@@ -2,14 +2,14 @@ BASE_DOMAIN = "10.120.0.67.nip.io"
 PASSWORD = "this-password-is-used-for-testing"
 
 define apply_folder
-	find -s $(1) -name "*.yaml" -exec cat {} \; | \
+	find $(1) -name "*.yaml" | sort -n | xargs cat | \
 		sed "s/PLACEHOLDER_DOMAIN/${BASE_DOMAIN}/g" | \
 		sed "s/PLACEHOLDER_PASSWORD/${PASSWORD}/g" | \
 		kubectl apply -f -
 endef
 
 define remove_folder
-	find -s $(1) -name "*.yaml" -exec cat {} \; | \
+	find $(1) -name "*.yaml" | sort -nr | xargs cat | \
 		kubectl delete -f -
 endef
 
