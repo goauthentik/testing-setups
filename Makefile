@@ -6,6 +6,7 @@ define apply_folder
 		sed "s/PLACEHOLDER_DOMAIN/${BASE_DOMAIN}/g" | \
 		sed "s/PLACEHOLDER_PASSWORD/${PASSWORD}/g" | \
 		kubectl apply -f -
+	sleep 5
 endef
 
 define remove_folder
@@ -15,7 +16,6 @@ endef
 
 base:
 	$(call apply_folder,cluster/system)
-	sleep 10
 	$(call apply_folder,cluster/base)
 
 nginx: base
