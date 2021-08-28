@@ -1,0 +1,43 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: authentik
+  namespace: authentik
+spec:
+  chart:
+    spec:
+      # renovate: registryUrl=https://charts.goauthentik.io/
+      chart: authentik
+      version: 2.1.0
+      sourceRef:
+        kind: HelmRepository
+        name: authentik
+        namespace: flux-system
+  interval: 1h0m0s
+  releaseName: authentik
+  values:
+    ingress:
+      enabled: true
+      hosts:
+        - host: ak.PLACEHOLDER_DOMAIN
+          paths:
+            - path: "/"
+              pathType: Prefix
+    postgresql:
+      enabled: true
+      postgresqlPassword: "PLACEHOLDER_PASSWORD"
+    redis:
+      enabled: true
+      architecture: standalone
+    fullnameOverride: authentik
+    image:
+      repository: ghcr.io/goauthentik/server
+      tag: 2021.8.3
+    authentik:
+      postgresql:
+        name: "authentik"
+        user: "authentik"
+        password: "PLACEHOLDER_PASSWORD"
+      log_level: debug
+      secret_key: "PLACEHOLDER_PASSWORD"
