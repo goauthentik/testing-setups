@@ -41,3 +41,7 @@ spec:
         password: "PLACEHOLDER_PASSWORD"
       log_level: debug
       secret_key: "PLACEHOLDER_PASSWORD"
+    env:
+      # https://goauthentik.io/docs/installation/automated-install
+      AK_ADMIN_PASS: "PLACEHOLDER_PASSWORD"
+      AK_ADMIN_TOKEN: "PLACEHOLDER_PASSWORD"
