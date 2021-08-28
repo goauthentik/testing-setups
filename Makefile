@@ -13,15 +13,15 @@ define remove_folder
 		kubectl delete -f -
 endef
 
-all:
-	$(call apply_folder,base/01_flux)
+base:
+	$(call apply_folder,cluster/system)
 	sleep 10
-	$(call apply_folder,base)
+	$(call apply_folder,cluster/base)
 
-nginx: all
+nginx: base
 	$(call apply_folder,ingress-nginx)
 
-traefik: all
+traefik: base
 	$(call apply_folder,ingress-traefik)
 
 remove:
