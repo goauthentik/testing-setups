@@ -1,0 +1,19 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: whoami
+  namespace: whoami
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+  - kind: Rule
+    match: Host(`whoami-ir.PLACEHOLDER_DOMAIN`)
+    middlewares:
+    - name: ak-outpost-authentik-embedded-outpost
+      namespace: authentik
+    services:
+    - name: whoami
+      port: 80

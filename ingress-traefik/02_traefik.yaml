@@ -20,6 +20,7 @@ spec:
     globalArguments:
       - "--global.checknewversion"
       - "--serverstransport.insecureskipverify=true"
+      - "--providers.kubernetescrd.allowCrossNamespace=true"
     ingressRoute:
       dashboard:
         enabled: false
