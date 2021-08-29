@@ -17,6 +17,18 @@ spec:
   interval: 1h0m0s
   releaseName: traefik
   values:
+    globalArguments:
+      - "--global.checknewversion"
+      - "--serverstransport.insecureskipverify=true"
+    ingressRoute:
+      dashboard:
+        enabled: false
     ingressClass:
       enabled: true
       isDefaultClass: true
+    logs:
+      general:
+        level: DEBUG
+      access:
+        enabled: true
+        format: json

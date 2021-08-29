@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard
+  namespace: traefik
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`traefik.PLACEHOLDER_DOMAIN`)
+      priority: 10
+      services:
+        - kind: TraefikService
+          name: api@internal
