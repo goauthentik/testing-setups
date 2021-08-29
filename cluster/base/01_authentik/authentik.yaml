@@ -17,6 +17,10 @@ spec:
   interval: 1h0m0s
   releaseName: authentik
   values:
+    image:
+      repository: beryju.org/authentik/server
+      tag: gh-master
+      pullPolicy: Always
     ingress:
       enabled: true
       hosts:
@@ -31,9 +35,6 @@ spec:
       enabled: true
       architecture: standalone
     fullnameOverride: authentik
-    image:
-      repository: ghcr.io/goauthentik/server
-      tag: 2021.8.3
     authentik:
       postgresql:
         name: "authentik"
@@ -41,6 +42,8 @@ spec:
         password: "PLACEHOLDER_PASSWORD"
       log_level: debug
       secret_key: "PLACEHOLDER_PASSWORD"
+      outposts:
+        docker_image_base: beryju.org/authentik/outpost-%(type)s:gh-%(build_hash)s
     env:
       # https://goauthentik.io/docs/installation/automated-install
       AK_ADMIN_PASS: "PLACEHOLDER_PASSWORD"
