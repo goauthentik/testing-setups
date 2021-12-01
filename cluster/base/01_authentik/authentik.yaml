@@ -18,7 +18,7 @@ spec:
   releaseName: authentik
   values:
     image:
-      repository: beryju.org/authentik/server
+      repository: goauthentik.io/dev-server
       tag: gh-master
       pullPolicy: Always
     ingress:
@@ -43,7 +43,7 @@ spec:
       log_level: debug
       secret_key: "PLACEHOLDER_PASSWORD"
       outposts:
-        docker_image_base: beryju.org/authentik/outpost-%(type)s:gh-%(build_hash)s
+        container_image_base: goauthentik.io/dev-%(type)s:gh-%(build_hash)s
     env:
       # https://goauthentik.io/docs/installation/automated-install
       AK_ADMIN_PASS: "PLACEHOLDER_PASSWORD"
