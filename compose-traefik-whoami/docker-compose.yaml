@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  traefik:
+    image: traefik
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+    ports:
+      - 80:80
+      - 8080:8080
+      - 443:443
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  whoami:
+    image: containous/whoami
+    labels:
+      traefik.enable: true
+      traefik.http.routers.whoami.rule: Host(`whoami.127.0.0.1.nip.io`)
+      traefik.http.routers.whoami.middlewares: authentik@docker
+  authentik-proxy:
+    image: goauthentik.io/proxy:latest
+    environment:
+      AUTHENTIK_HOST: http://test.10.120.20.57.nip.io:9000/
+      AUTHENTIK_INSECURE: "false"
+      AUTHENTIK_TOKEN:
+      # Starting with 2021.9, you can optionally set this too
+      # when authentik_host for internal communication doesn't match the public URL
+      # AUTHENTIK_HOST_BROWSER: https://external-domain.tld
+    labels:
+      traefik.enable: true
+      traefik.port: 9000
+      traefik.http.routers.authentik.rule: Host(`whoami.127.0.0.1.nip.io`) && PathPrefix(`/akprox/`)
+      traefik.http.middlewares.authentik.forwardauth.address: http://authentik-proxy:9000/akprox/auth/traefik
+      traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
+      traefik.http.middlewares.authentik.forwardauth.authResponseHeadersRegex: ^.*$$
+    restart: unless-stopped
