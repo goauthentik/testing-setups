@@ -1,0 +1,46 @@
+name: authentik-testing-docker
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: docker-compose test - authentik ${{ matrix.authentik_version }} - setup ${{ matrix.setup }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        authentik_version:
+          # - 'stable'
+          - 'beta'
+        setup:
+          # - 'nginx'
+          - 'traefik'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup authentik
+        uses: goauthentik/action-setup-authentik@main
+        id: setup
+        with:
+          version: ${{ matrix.authentik_version }}
+          sentry_env: goauthentik-terraform-ci
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+      - name: Apply terraform config
+        run: |
+          terraform init
+          terraform apply -auto-approve -input=false
+        env:
+          AUTHENTIK_TOKEN: ${{ steps.setup.outputs.admin_token }}
+          AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
+        working-directory: compose-${{ matrix.setup }}-whoami
+      - name: Start remaining containers
+        run: |
+          docker-compose up -d
+        env:
+          AUTHENTIK_TOKEN: ${{ steps.setup.outputs.admin_token }}
+          AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
+        working-directory: compose-${{ matrix.setup }}-whoami
