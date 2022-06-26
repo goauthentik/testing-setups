@@ -1,8 +1,14 @@
 version: '3.7'
 
+networks:
+  authentik_default:
+    external: {}
+
 services:
   traefik:
     image: traefik
+    networks:
+      - authentik_default
     command:
       - "--log.level=DEBUG"
       - "--api.insecure=true"
@@ -22,13 +28,5 @@ services:
       traefik.enable: true
       traefik.http.routers.whoami.rule: Host(`whoami.127.0.0.1.nip.io`)
       traefik.http.routers.whoami.middlewares: authentik@docker
-  authentik-proxy:
-    image: goauthentik.io/proxy:latest
-    labels:
-      traefik.enable: true
-      traefik.port: 9000
-      traefik.http.routers.authentik.rule: Host(`whoami.127.0.0.1.nip.io`) && PathPrefix(`/outpost.goauthentik.io/`)
-      traefik.http.middlewares.authentik.forwardauth.address: http://authentik-proxy:9000/outpost.goauthentik.io/auth/traefik
-      traefik.http.middlewares.authentik.forwardauth.trustForwardHeader: true
-      traefik.http.middlewares.authentik.forwardauth.authResponseHeadersRegex: ^.*$$
-    restart: unless-stopped
+    networks:
+      - authentik_default
