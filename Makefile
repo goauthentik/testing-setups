@@ -1,28 +1,19 @@
-BASE_DOMAIN = "10.120.0.67.nip.io"
-PASSWORD = "this-password-is-used-for-testing"
+.PHONY: local
 
-define apply_folder
-	find $(1) -name "*.yaml" | sort -n | xargs cat | \
-		sed "s/PLACEHOLDER_DOMAIN/${BASE_DOMAIN}/g" | \
-		sed "s/PLACEHOLDER_PASSWORD/${PASSWORD}/g" | \
-		kubectl apply -f -
-	sleep 5
-endef
-
-define remove_folder
-	find $(1) -name "*.yaml" | sort -nr | xargs cat | \
-		kubectl delete -f -
-endef
-
-kube-base:
-	$(call apply_folder,cluster/system)
-	$(call apply_folder,cluster/base)
-
-kube-nginx: kube-base
-	$(call apply_folder,ingress-nginx)
-
-kube-traefik: kube-base
-	$(call apply_folder,ingress-traefik)
-
-kube-remove:
-	$(call remove_folder,.)
+local:
+	echo "PG_PASS=$(openssl rand -base64 32)" >> local/.env
+	echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> local/.env
+	echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> local/.env
+	echo "AUTHENTIK_DISABLE_UPDATE_CHECK=true" >> local/.env
+	echo "AUTHENTIK_DISABLE_STARTUP_ANALYTICS=true" >> local/.env
+	AUTHENTIK_BOOTSTRAP_TOKEN=$(openssl rand -base64 32)
+	echo "AUTHENTIK_BOOTSTRAP_TOKEN=${AUTHENTIK_BOOTSTRAP_TOKEN}" >> local/.env
+	AUTHENTIK_BOOTSTRAP_PASSWORD=$(openssl rand -base64 32)
+	echo "AUTHENTIK_BOOTSTRAP_PASSWORD=${AUTHENTIK_BOOTSTRAP_PASSWORD}" >> local/.env
+	echo "AUTHENTIK_IMAGE=goauthentik.io/dev-server" >> local/.env
+	echo "AUTHENTIK_TAG=gh-next" >> local/.env
+	echo "AUTHENTIK_OUTPOSTS__DOCKER_IMAGE_BASE=goauthentik.io/dev-%(type)s:gh-next" >> local/.env
+	export COMPOSE_PROJECT_NAME=authentik
+	cd local && docker-compose pull -q
+	cd local && docker-compose up -d
+	timeout 600 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' localhost:9000/api/v3/root/config/)" != "200" ]]; do sleep 5; done' || false

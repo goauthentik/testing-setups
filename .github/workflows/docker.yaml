@@ -10,7 +10,7 @@ on:
 
 jobs:
   test:
-    name: docker-compose test - authentik ${{ matrix.authentik_version }} - setup ${{ matrix.setup }}
+    name: compose - authentik ${{ matrix.authentik_version }} - proxy ${{ matrix.proxy }} - ${{ matrix.mode }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -19,9 +19,12 @@ jobs:
         authentik_version:
           # - 'stable'
           - 'beta'
-        setup:
+        proxy:
           # - 'nginx'
           - 'traefik'
+        mode:
+          - 'forward_single'
+          # - 'forward_domain'
     steps:
       - uses: actions/checkout@v3
       - name: Setup authentik
@@ -39,11 +42,11 @@ jobs:
         env:
           AUTHENTIK_TOKEN: ${{ steps.setup.outputs.admin_token }}
           AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
-        working-directory: compose-${{ matrix.setup }}-whoami
+        working-directory: compose-${{ matrix.proxy }}-${{ matrix.mode }}
       - name: Start remaining containers
         run: |
           docker-compose up -d
         env:
           AUTHENTIK_TOKEN: ${{ steps.setup.outputs.admin_token }}
           AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
-        working-directory: compose-${{ matrix.setup }}-whoami
+        working-directory: compose-${{ matrix.proxy }}-${{ matrix.mode }}
