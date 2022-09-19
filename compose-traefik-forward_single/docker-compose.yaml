@@ -2,7 +2,7 @@ version: '3.7'
 
 networks:
   authentik_default:
-    external: {}
+    name: local_default
 
 services:
   traefik:

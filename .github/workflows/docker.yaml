@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         authentik_version:
-          # - 'stable'
+          - 'stable'
           - 'beta'
         proxy:
           # - 'nginx'
@@ -27,25 +27,25 @@ jobs:
           # - 'forward_domain'
     steps:
       - uses: actions/checkout@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
       - name: Setup authentik
         uses: goauthentik/action-setup-authentik@main
         id: setup
         with:
           version: ${{ matrix.authentik_version }}
           sentry_env: goauthentik-terraform-ci
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-      - name: Apply terraform config
+      - name: Start remaining containers
         run: |
-          terraform init
-          terraform apply -auto-approve -input=false
+          docker compose up -d
         env:
           AUTHENTIK_TOKEN: ${{ steps.setup.outputs.admin_token }}
           AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}
         working-directory: compose-${{ matrix.proxy }}-${{ matrix.mode }}
-      - name: Start remaining containers
+      - name: Apply terraform config
         run: |
-          docker-compose up -d
+          terraform init
+          terraform apply -auto-approve -input=false
         env:
           AUTHENTIK_TOKEN: ${{ steps.setup.outputs.admin_token }}
           AUTHENTIK_URL: ${{ steps.setup.outputs.http_url }}

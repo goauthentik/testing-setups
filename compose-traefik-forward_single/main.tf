@@ -2,7 +2,6 @@ terraform {
   required_providers {
     authentik = {
       source  = "goauthentik/authentik"
-      version = "2022.6.3"
     }
   }
 }
@@ -41,21 +40,25 @@ resource "authentik_outpost" "docker" {
   ]
   service_connection = authentik_service_connection_docker.local.id
   config = jsonencode({
-    log_level                      = "trace"
-    docker_labels                  = null
-    authentik_host                 = "http://authentik:9000"
-    docker_network                 = "authentik_default"
-    container_image                = null
-    docker_map_ports               = true
-    kubernetes_replicas            = 1
-    kubernetes_namespace           = "default"
+    authentik_host                 = "http://local-server-1:9000"
     authentik_host_browser         = ""
-    object_naming_template         = "ak-outpost-%(name)s"
     authentik_host_insecure        = false
-    kubernetes_service_type        = "ClusterIP"
-    kubernetes_image_pull_secrets  = []
+    container_image                = null
+    docker_labels                  = {
+      "traefik.http.middlewares.authentik.forwardauth.address": "http://ak-outpost-docker:9000/outpost.goauthentik.io/auth/traefik"
+      "traefik.http.middlewares.authentik.forwardauth.trustForwardHeader": "true"
+      "traefik.http.middlewares.authentik.forwardauth.authResponseHeaders": "X-authentik-username,X-authentik-groups,X-authentik-email,X-authentik-name,X-authentik-uid,X-authentik-jwt,X-authentik-meta-jwks,X-authentik-meta-outpost,X-authentik-meta-provider,X-authentik-meta-app,X-authentik-meta-version"
+    }
+    docker_map_ports               = false
+    docker_network                 = "local_default"
     kubernetes_disabled_components = []
+    kubernetes_image_pull_secrets  = []
     kubernetes_ingress_annotations = {}
     kubernetes_ingress_secret_name = "authentik-outpost-tls"
+    kubernetes_namespace           = "default"
+    kubernetes_replicas            = 1
+    kubernetes_service_type        = "ClusterIP"
+    log_level                      = "trace"
+    object_naming_template         = "ak-outpost-%(name)s"
   })
 }

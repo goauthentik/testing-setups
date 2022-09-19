@@ -34,3 +34,4 @@ override.tf.json
 terraform.rc
 *.zip
 .terraform.lock.hcl
+local/docker-compose.yml
