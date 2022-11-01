@@ -1,0 +1,27 @@
+version: '3.7'
+
+networks:
+  authentik_default:
+    name: local_default
+
+services:
+  nginx:
+    image: docker.io/library/nginx:1.23
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - authentik_default
+    ports:
+      - 80:80
+      - 443:443
+  whoami:
+    image: docker.io/containous/whoami
+    networks:
+      - authentik_default
+  authentik-proxy:
+    image: ghcr.io/goauthentik/proxy:latest
+    env_file:
+      - ../.env
+    restart: unless-stopped
+    networks:
+      - authentik_default

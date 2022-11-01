@@ -1,6 +1,4 @@
-.PHONY: local
-
-local: local/docker-compose.yml
+compose-local: local/docker-compose.yml
 	cd local && docker compose up -d
 	./local/wait.sh
 

@@ -8,26 +8,9 @@
 
 # authentik testing setups
 
-Kubernetes manifests to quickly test different cluster setups with authentik.
+authentik docker-compose and kubernetes setups for forward auth in various configurations
 
-## Run
+## Run (docker-compose)
 
-### `make all`:
+`make compose-local` will setup a local docker-compose authentik install.
 
-Apply common resources, in the following order:
-
-- FluxCD: used to deploy helmcharts via CRDs
-- authentik: Install authentik with PostgreSQL and Redis
-- whoami: A simple application to test with
-
-### `make nginx`:
-
-Common resources + nginx ingress controller
-
-### `make traefik`:
-
-Common resources + traefik ingress controller
-
-### `make remove`:
-
-Remove all resources.

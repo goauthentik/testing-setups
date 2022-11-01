@@ -6,7 +6,7 @@ networks:
 
 services:
   traefik:
-    image: docker.io/library/traefik
+    image: docker.io/library/traefik:v2.9
     networks:
       - authentik_default
     command:
