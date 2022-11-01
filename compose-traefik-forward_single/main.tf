@@ -14,7 +14,7 @@ data "authentik_flow" "default-authorization-flow" {
 }
 
 resource "authentik_provider_proxy" "provider" {
-  name               = "whoami"
+  name               = "test-app-a"
   internal_host      = ""
   external_host      = "http://localhost.dev.goauthentik.io"
   mode               = "forward_single"
@@ -23,8 +23,8 @@ resource "authentik_provider_proxy" "provider" {
 }
 
 resource "authentik_application" "app" {
-  name              = "whoami"
-  slug              = "whoami"
+  name              = "test-app-a"
+  slug              = "test-app-a"
   protocol_provider = authentik_provider_proxy.provider.id
 }
 

@@ -22,13 +22,13 @@ services:
       - 443:443
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-  whoami:
-    image: docker.io/containous/whoami
+  test-app-a:
+    image: ghcr.io/stefanprodan/podinfo:6.2.2
     labels:
       traefik.enable: true
-      traefik.http.routers.whoami.rule: Host(`localhost.dev.goauthentik.io`)
-      traefik.http.routers.whoami.middlewares: authentik@docker
-      traefik.http.routers.whoami_anon.rule: Host(`anon-whoami.localhost.dev.goauthentik.io`)
+      traefik.http.routers.test-app-a.rule: Host(`localhost.dev.goauthentik.io`)
+      traefik.http.routers.test-app-a.middlewares: authentik@docker
+      traefik.http.routers.test-app-a_anon.rule: Host(`anon-test-app-a.localhost.dev.goauthentik.io`)
     networks:
       - authentik_default
   authentik-proxy:

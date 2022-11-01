@@ -14,8 +14,10 @@ services:
     ports:
       - 80:80
       - 443:443
-  whoami:
-    image: docker.io/containous/whoami
+  test-app-a:
+    image: ghcr.io/stefanprodan/podinfo:6.2.2
+    environment:
+      PODINFO_UI_MESSAGE: test-app-a
     networks:
       - authentik_default
   authentik-proxy:
