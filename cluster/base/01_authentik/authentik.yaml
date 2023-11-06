@@ -24,7 +24,7 @@ spec:
     ingress:
       enabled: true
       hosts:
-        - host: ak.127.0.0.1.xip.io
+        - host: ak.127.0.0.1.nip.io
           paths:
             - path: "/"
               pathType: Prefix

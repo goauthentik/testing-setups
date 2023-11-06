@@ -6,7 +6,7 @@ metadata:
   namespace: whoami
 spec:
   rules:
-  - host: whoami.127.0.0.1.xip.io
+  - host: whoami.127.0.0.1.nip.io
     http:
       paths:
       - backend:

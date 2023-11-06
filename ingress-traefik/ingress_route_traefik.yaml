@@ -10,7 +10,7 @@ spec:
     - websecure
   routes:
     - kind: Rule
-      match: Host(`traefik.127.0.0.1.xip.io`)
+      match: Host(`traefik.127.0.0.1.nip.io`)
       priority: 10
       services:
         - kind: TraefikService
