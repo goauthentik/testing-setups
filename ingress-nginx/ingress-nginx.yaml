@@ -21,3 +21,5 @@ spec:
       allowSnippetAnnotations: true
       admissionWebhooks:
         enabled: false
+      ingressClassResource:
+        default: true
