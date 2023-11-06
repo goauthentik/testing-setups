@@ -10,7 +10,7 @@ spec:
     - websecure
   routes:
   - kind: Rule
-    match: Host(`whoami-ir.PLACEHOLDER_DOMAIN`)
+    match: Host(`whoami-ir.127.0.0.1.xip.io`)
     middlewares:
     - name: ak-outpost-authentik-embedded-outpost
       namespace: authentik
