@@ -6,6 +6,9 @@
 
 [![](https://img.shields.io/discord/809154715984199690?label=Discord&style=for-the-badge)](https://discord.gg/jg33eMhnj6)
 
+> [!WARNING]  
+> These test files are now part of the authentik e2e tests, see https://github.com/goauthentik/authentik/pull/11374
+
 # authentik testing setups
 
 authentik docker-compose and kubernetes setups for forward auth in various configurations
